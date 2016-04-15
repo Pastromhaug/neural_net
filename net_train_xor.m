@@ -40,15 +40,16 @@ for i = 1:epochs
         epoch_loss = epoch_loss + loss;
         [x,ix] = max(yclass);
         [xtr,ixtr] = max(ytr);
-        if ix == ixtr,
-            numright = numright + 1;
-        endif;
-        if isequal(round(yclass),[1;0]) ,
-            plot_colors(j,:) = [250,0,0];
-        else,
-            plot_colors(j,:) = [0,250,0];
-        endif;
-        
+        for l = 1:size(yclass,2)
+            if ix(l) == ixtr(l),
+                numright = numright + 1;
+            endif;
+            if isequal(round(yclass(:,l)),[1;0]) ,
+                plot_colors(j+l-1,:) = [250,0,0];
+            else,
+                plot_colors(j+l-1,:) = [0,250,0];
+            endif;
+        end;        
     end;
 
 %------ plotting & printing to console-------
