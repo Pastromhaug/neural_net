@@ -1,5 +1,6 @@
 function [G] = back_prop(W, A, Z, ytr, loss_grad, non_lin_grad)
 
+
 n = length(W);
 G = cell(1,n);
 dZ = cell(1,n);

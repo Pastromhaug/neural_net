@@ -1,6 +1,6 @@
 % init_training_data params
 num_params = 2;
-num_pts = 1000;
+num_pts = 500;
 f = @(x,y) xor(x,y); 
 min_f_param = 0;
 max_f_param = 1;
@@ -8,7 +8,7 @@ max_f_param = 1;
 % init_weights params
 output_dim = 2;
 depth = 3;
-width = 100;
+width = 6;
 w_mean = 0;
 w_std = 0.1;
 
