@@ -1,12 +1,14 @@
 % rest of params
-epochs = 100;
+epochs = 10;
 learning_rate = 1e-2;
 non_lin = @(x) max(x,0);
 non_lin_grad = @(a) (a > 0);
 loss_func = @(yclass, ytr) sum(1/2*(ytr - yclass).^2);
 loss_grad = @(yclass, ytr) yclass - ytr;
+batch_size = 1;
 
 W = Winit;
+num_batches = ceil(num_pts/batch_size);
 % training neural net
 EpochLosses = zeros(epochs);
 Accuracies = zeros(epochs);
@@ -22,9 +24,10 @@ for i = 1:epochs
     plot_colors = zeros(num_pts,3);
     
 %------ actual training --------------------
-    for j = 1:num_pts
-        xtr = Xtr(:,j);
-        ytr = Ytr(:,j);
+    for j = 1:num_batches
+        idx = (j-1)*batch_size+1 : 1 : mod(j*batch_size,num_pts+1);
+        xtr = Xtr(:,idx);
+        ytr = Ytr(:,idx);
         [A,Z] = forward_pass(W, xtr, non_lin);
         G = back_prop(W, A, Z, ytr, loss_grad, non_lin_grad);
         for k = 1:length(W);
