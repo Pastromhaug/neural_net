@@ -36,7 +36,7 @@ for i = 1:epochs
                
 %------- stats ----------------------------
         yclass = A{length(A)};
-        loss = loss_func(yclass, ytr);
+        loss = sum(loss_func(yclass, ytr));
         epoch_loss = epoch_loss + loss;
         [x,ix] = max(yclass);
         [xtr,ixtr] = max(ytr);
