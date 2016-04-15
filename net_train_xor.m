@@ -5,7 +5,7 @@ non_lin = @(x) max(x,0);
 non_lin_grad = @(a) (a > 0);
 loss_func = @(yclass, ytr) sum(1/2*(ytr - yclass).^2);
 loss_grad = @(yclass, ytr) yclass - ytr;
-batch_size = 1;
+batch_size = 11;
 
 W = Winit;
 num_batches = ceil(num_pts/batch_size);
@@ -25,7 +25,9 @@ for i = 1:epochs
     
 %------ actual training --------------------
     for j = 1:num_batches
-        idx = (j-1)*batch_size+1 : 1 : mod(j*batch_size,num_pts+1);
+        batch_start = (j-1)*batch_size+1;
+        batch_end = min(j*batch_size,num_pts);
+        idx = batch_start:1:batch_end;
         xtr = Xtr(:,idx);
         ytr = Ytr(:,idx);
         [A,Z] = forward_pass(W, xtr, non_lin);
@@ -45,9 +47,9 @@ for i = 1:epochs
                 numright = numright + 1;
             endif;
             if isequal(round(yclass(:,l)),[1;0]) ,
-                plot_colors(j+l-1,:) = [250,0,0];
+                plot_colors((j-1)*batch_size+l,:) = [250,0,0];
             else,
-                plot_colors(j+l-1,:) = [0,250,0];
+                plot_colors((j-1)*batch_size+l,:) = [0,250,0];
             endif;
         end;        
     end;
@@ -58,6 +60,7 @@ for i = 1:epochs
     accuracy = numright / num_pts;
     Accuracies(i) = accuracy;
     
+    %plot_colors
     figure(1);
     s = scatter(Xtr(1,:),Xtr(2,:),s=8,c=plot_colors,"filled");
     axis("square");
