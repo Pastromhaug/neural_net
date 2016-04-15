@@ -1,21 +1,11 @@
-function [F] = forward_pass(W, x)
+function [A,Z] = forward_pass(W, x, non_lin)
 
 n = length(W);
-F = cell(i, n+1);
+A = cell(1,n);
+Z = cell(1,n);
 
-F(1,1) = x;
-
-for i= 1:n-1
-    f = F{1,i}*W{i};
-    F(1,i+1) = [relU(f,0),1];
-endfor;
-
-f = F{1,n}*W{n};
-F(1,n+1) = f;
-
-
-
-function o = relU(x)
-    o = max(x,0);
-endfunction;
-endfunction;
+for i= 1:n
+    Z{i} = [x;ones(1,size(x,2))];
+    A{i} = W{i}*Z{i};
+    x = non_lin(A{i});
+end

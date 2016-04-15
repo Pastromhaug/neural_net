@@ -1,19 +1,18 @@
-function [G] = back_prop(W, F, yclass, ytr)
+function [G] = back_prop(W, A, Z, ytr, loss_grad, non_lin_grad)
 
 n = length(W);
+G = cell(1,n);
+dZ = cell(1,n);
+dA = cell(1,n);
+yclass = A{n};
 
-G = cell(size(W));
-num_y = size(yclass);
-   
-G{n} = least_squares_grad(F, ytr)';
+dA{n} = loss_grad(A{n}, ytr);
 
-for i = n-1:-1:1
-    [n,m] = size(F{i+1});
-    Fnob = F{i+1}(:,1:m-1);
-    [gn,gm] = size(G{i+1});
-    Gnob = G{i+1}(1:gn,1:gm-1);
-    G{i} = relU_grad(Fnob, F{i}).*sum(Gnob,1);
-endfor;
-
-
-
+for i = n:-1:2
+    G{i} = dA{i}*(Z{i})';
+    dZ{i} = (W{i})'*dA{i};
+    [dzn,~] = size(Z{i});
+    dZnob = dZ{i}(1:dzn-1,:);
+    dA{i-1} = non_lin_grad(A{i-1}) .* dZnob;
+end;
+G{1} = dA{1}*(Z{1})';
